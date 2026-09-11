@@ -16,55 +16,6 @@
       padding: 16px 12px 40px;
     }
 
-    /* ====== 密码锁界面 ====== */
-    #lockScreen {
-      position: fixed;
-      inset: 0;
-      background: #1e293b;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      padding: 24px;
-    }
-    #lockScreen .lock-icon { font-size: 3rem; margin-bottom: 16px; }
-    #lockScreen h2 { color: white; font-size: 1.3rem; margin-bottom: 24px; font-weight: 500; }
-    #lockScreen input {
-      width: 100%;
-      max-width: 280px;
-      padding: 14px 18px;
-      border-radius: 14px;
-      border: 2px solid #334155;
-      background: #0f172a;
-      color: white;
-      font-size: 1rem;
-      text-align: center;
-      letter-spacing: 2px;
-      outline: none;
-    }
-    #lockScreen input:focus { border-color: #3b82f6; }
-    #lockScreen button {
-      margin-top: 16px;
-      width: 100%;
-      max-width: 280px;
-      padding: 14px;
-      border-radius: 40px;
-      border: none;
-      background: #3b82f6;
-      color: white;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    #lockScreen .err {
-      color: #f87171;
-      font-size: 0.85rem;
-      margin-top: 12px;
-      height: 18px;
-    }
-
     .app-container { max-width: 800px; width: 100%; }
     .app-header { margin-bottom: 20px; }
     .app-header h1 {
@@ -173,10 +124,10 @@
     .med-info { flex: 1; min-width: 200px; }
     .med-name {
       font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 6px;
-      display: flex; align-items: center; flex-wrap: wrap; gap: 8 #px;
+      display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
     }
     .med-indication {
-     334 color:155; font-size: 0.9rem; line-height: 1.5; margin-bottom: 8px;
+      color: #334155; font-size: 0.9rem; line-height: 1.5; margin-bottom: 8px;
       background: #f1f5f9; padding: 6px 10px; border-radius: 12px; word-break: break-word;
     }
     .med-meta {
@@ -224,16 +175,7 @@
 </head>
 <body>
 
-  <!-- ====== 密码锁界面 ====== -->
-  <div id="lockScreen">
-    <div class="lock-icon">🔒</div>
-    <h2>小药箱已加密</h2>
-    <input type="password" id="passwordInput" placeholder="请输入密码" autocomplete="off" inputmode="numeric">
-    <button id="unlockBtn">进入</button>
-    <div class="err" id="lockError"></div>
-  </div>
-
-  <div class="app-container" id="mainApp" style="display: none;">
+  <div class="app-container" id="mainApp">
     <div class="app-header">
       <h1><span>💊</span> 小药箱</h1>
       <div class="subhead">记录手头药品 · 适应症 · 到期日 · 余量</div>
@@ -305,45 +247,7 @@
   <div id="toast" class="toast-message"></div>
 
   <script>
-    // ==================== 密码设置 ====================
-    // 👇 把这里的数字改成你想设的密码
-    const PASSWORD = "123456";
-    // ==================================================
-
     (function() {
-      // ---- 密码验证逻辑 ----
-      const lockScreen = document.getElementById('lockScreen');
-      const mainApp = document.getElementById('mainApp');
-      const passwordInput = document.getElementById('passwordInput');
-      const unlockBtn = document.getElementById('unlockBtn');
-      const lockError = document.getElementById('lockError');
-
-      const unlocked = sessionStorage.getItem('medicine_box_unlocked');
-      if (unlocked === 'yes') {
-        lockScreen.style.display = 'none';
-        mainApp.style.display = 'block';
-      }
-
-      function tryUnlock() {
-        const input = passwordInput.value.trim();
-        if (input === PASSWORD) {
-          sessionStorage.setItem('medicine_box_unlocked', 'yes');
-          lockScreen.style.display = 'none';
-          mainApp.style.display = 'block';
-          lockError.textContent = '';
-          passwordInput.value = '';
-        } else {
-          lockError.textContent = '密码错误，请重试';
-          passwordInput.value = '';
-          passwordInput.focus();
-        }
-      }
-
-      unlockBtn.addEventListener('click', tryUnlock);
-      passwordInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') tryUnlock();
-      });
-
       // ---- 小药箱逻辑 ----
       const STORAGE_KEY = 'medicine_box_items';
       let medicines = [];
