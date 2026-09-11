@@ -83,7 +83,6 @@
     .btn-edit { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
     .btn-edit:hover { background: #bae6fd; border-color: #7dd3fc; }
 
-    /* 工具条：搜索 + 导入导出 */
     .tool-bar {
       background: white;
       border-radius: 20px;
@@ -292,7 +291,6 @@
       </form>
     </div>
 
-    <!-- ====== 搜索 + 导入导出 工具条 ====== -->
     <div class="tool-bar">
       <div class="search-row">
         <span class="search-icon">🔍</span>
@@ -314,7 +312,6 @@
     <div class="footer-note">数据保存在浏览器本地，关闭页面不会丢失</div>
   </div>
 
-  <!-- ====== 编辑弹窗 ====== -->
   <div class="modal-overlay" id="editModal">
     <div class="modal-box">
       <div class="modal-title">
@@ -362,7 +359,6 @@
     </div>
   </div>
 
-  <!-- ====== 导入弹窗 ====== -->
   <div class="modal-overlay" id="importModal">
     <div class="modal-box">
       <div class="modal-title">
@@ -385,7 +381,6 @@
 
   <script>
     (function() {
-      // ==================== 小药箱逻辑 ====================
       const STORAGE_KEY = 'medicine_box_items';
       let medicines = [];
 
@@ -404,7 +399,6 @@
       const searchInput = document.getElementById('searchInput');
       const toastEl = document.getElementById('toast');
 
-      // 编辑弹窗
       const editModal = document.getElementById('editModal');
       const editForm = document.getElementById('editForm');
       const editId = document.getElementById('editId');
@@ -416,7 +410,6 @@
       const editCloseBtn = document.getElementById('editCloseBtn');
       const editCancelBtn = document.getElementById('editCancelBtn');
 
-      // 导入弹窗
       const importModal = document.getElementById('importModal');
       const importTextarea = document.getElementById('importTextarea');
       const importBtn = document.getElementById('importBtn');
@@ -634,7 +627,7 @@
         }
       }
 
-      // ==================== 导出 / 导入 ====================
+      // ===== 导出 =====
       function exportData() {
         if (!medicines.length) {
           showToast('没有数据可导出');
@@ -647,7 +640,6 @@
         };
         const text = JSON.stringify(exportObj, null, 2);
 
-        // 尝试复制到剪贴板
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text).then(() => {
             showToast('✅ 已复制到剪贴板，粘贴到备忘录保存吧');
@@ -667,10 +659,7 @@
         try {
           const ok = document.execCommand('copy');
           if (ok) showToast('✅ 已复制到剪贴板，粘贴到备忘录保存吧');
-          else {
-            // 实在复制不了，就让用户手动复制
-            prompt('复制下面的内容保存到备忘录：', text);
-          }
+          else prompt('复制下面的内容保存到备忘录：', text);
         } catch (err) {
           prompt('复制下面的内容保存到备忘录：', text);
         } finally {
@@ -678,6 +667,7 @@
         }
       }
 
+      // ===== 导入 =====
       function openImportModal() {
         importTextarea.value = '';
         importModal.classList.add('show');
@@ -700,7 +690,6 @@
         }
 
         let importedMeds = null;
-        // 兼容两种格式：{version, medicines} 或直接数组
         if (Array.isArray(parsed)) {
           importedMeds = parsed;
         } else if (parsed && Array.isArray(parsed.medicines)) {
@@ -712,7 +701,6 @@
           return;
         }
 
-        // 规范化数据
         importedMeds = importedMeds.map(med => ({
           id: med.id || generateId(),
           name: med.name || '未命名药品',
@@ -733,6 +721,35 @@
         showToast(`✅ 已导入 ${importedMeds.length} 条药品`);
       }
 
-      // ==================== 事件绑定 ====================
+      // ===== 事件绑定 =====
       form.addEventListener('submit', (e) => {
         e.preventDefault();
+        const name = medNameInput.value.trim();
+        if (!name) { showToast('请填写药品名称'); medNameInput.focus(); return; }
+        addMedicine(
+          name,
+          medIndicationInput.value.trim(),
+          medExpiryInput.value,
+          medQuantityInput.value,
+          medUnitSelect.value
+        );
+        resetForm(); showToast('✅ 药品已保存');
+      });
+
+      resetBtn.addEventListener('click', resetForm);
+      clearAllBtn.addEventListener('click', clearAllMedicines);
+
+      searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value;
+        render();
+      });
+
+      listContainer.addEventListener('click', (e) => {
+        const editBtn = e.target.closest('.edit-btn');
+        if (editBtn) { e.stopPropagation(); openEditModal(editBtn.dataset.id); return; }
+        const delBtn = e.target.closest('.delete-btn');
+        if (delBtn) { e.stopPropagation(); deleteMedicineById(delBtn.dataset.id); }
+      });
+
+      // 编辑弹窗事件
+      editCloseBtn.addEventListener('
