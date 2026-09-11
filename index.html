@@ -80,9 +80,11 @@
     .btn-small { padding: 6px 12px; font-size: 0.8rem; border-radius: 30px; }
     .btn-danger { background: #fee2e2; color: #b91c1c; border-color: #fecaca; }
     .btn-danger:hover { background: #fecaca; border-color: #fca5a5; }
+    .btn-edit { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
+    .btn-edit:hover { background: #bae6fd; border-color: #7dd3fc; }
 
-    /* ====== 搜索框 ====== */
-    .search-box {
+    /* 工具条：搜索 + 导入导出 */
+    .tool-bar {
       background: white;
       border-radius: 20px;
       padding: 12px 16px;
@@ -90,11 +92,16 @@
       box-shadow: 0 3px 12px rgba(0,0,0,0.02);
       border: 1px solid #eef2f6;
       display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .search-row {
+      display: flex;
       align-items: center;
       gap: 10px;
     }
-    .search-box .search-icon { font-size: 1.1rem; color: #94a3b8; }
-    .search-box input {
+    .search-row .search-icon { font-size: 1.1rem; color: #94a3b8; }
+    .search-row input {
       flex: 1;
       border: none;
       outline: none;
@@ -103,7 +110,19 @@
       background: transparent;
       color: #1e293b;
     }
-    .search-box input::placeholder { color: #94a3b8; }
+    .search-row input::placeholder { color: #94a3b8; }
+    .backup-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+    }
+    .backup-row .btn {
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      border-radius: 30px;
+    }
 
     .list-header {
       display: flex; justify-content: space-between; align-items: center;
@@ -171,6 +190,51 @@
     }
     .toast-message.show { opacity: 1; }
     .footer-note { text-align: center; font-size: 0.75rem; color: #94a3b8; margin-top: 28px; }
+
+    /* ===== 编辑弹窗 ===== */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.5);
+      display: none; align-items: center; justify-content: center;
+      z-index: 200; padding: 16px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: white; border-radius: 24px; padding: 22px 20px;
+      width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .modal-title {
+      font-size: 1.15rem; font-weight: 600; color: #0f172a;
+      margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-close {
+      background: #f1f5f9; border: none; border-radius: 50%;
+      width: 32px; height: 32px; cursor: pointer;
+      font-size: 1.1rem; color: #475569;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { background: #e2e8f0; }
+    .modal-actions {
+      display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;
+    }
+    .modal-actions .btn { padding: 10px 20px; font-size: 0.9rem; }
+
+    /* ===== 导入弹窗 ===== */
+    .import-textarea {
+      width: 100%;
+      min-height: 140px;
+      padding: 12px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      font-family: monospace;
+      background: #fafcff;
+      resize: vertical;
+    }
+    .import-textarea:focus {
+      outline: none; border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
   </style>
 </head>
 <body>
@@ -228,10 +292,16 @@
       </form>
     </div>
 
-    <!-- ====== 搜索框 ====== -->
-    <div class="search-box">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="搜索药品名称…" autocomplete="off">
+    <!-- ====== 搜索 + 导入导出 工具条 ====== -->
+    <div class="tool-bar">
+      <div class="search-row">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="搜索药品名称…" autocomplete="off">
+      </div>
+      <div class="backup-row">
+        <button class="btn btn-secondary" id="exportBtn" title="导出药品数据为文本">📤 导出备份</button>
+        <button class="btn btn-secondary" id="importBtn" title="从文本导入药品数据">📥 导入备份</button>
+      </div>
     </div>
 
     <div class="list-header">
@@ -244,11 +314,78 @@
     <div class="footer-note">数据保存在浏览器本地，关闭页面不会丢失</div>
   </div>
 
+  <!-- ====== 编辑弹窗 ====== -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span>✏️ 编辑药品</span>
+        <button class="modal-close" id="editCloseBtn">✕</button>
+      </div>
+      <form id="editForm">
+        <input type="hidden" id="editId">
+        <div class="form-grid">
+          <div class="input-group full-width">
+            <label>药品名称 <span class="required">*</span></label>
+            <input type="text" id="editName" required maxlength="60">
+          </div>
+          <div class="input-group">
+            <label>到期日</label>
+            <input type="date" id="editExpiry">
+          </div>
+          <div class="input-group">
+            <label>余量数量</label>
+            <input type="number" id="editQuantity" min="0" step="1">
+          </div>
+          <div class="input-group">
+            <label>余量单位</label>
+            <select id="editUnit">
+              <option value="片">片</option>
+              <option value="盒">盒</option>
+              <option value="粒">粒</option>
+              <option value="袋">袋</option>
+              <option value="支">支</option>
+              <option value="ml">ml</option>
+              <option value="mg">mg</option>
+              <option value="瓶">瓶</option>
+            </select>
+          </div>
+          <div class="input-group full-width">
+            <label>适应症 / 功效</label>
+            <textarea id="editIndication" rows="2" maxlength="200"></textarea>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="editCancelBtn">取消</button>
+          <button type="submit" class="btn btn-primary">💾 保存修改</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====== 导入弹窗 ====== -->
+  <div class="modal-overlay" id="importModal">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span>📥 导入备份</span>
+        <button class="modal-close" id="importCloseBtn">✕</button>
+      </div>
+      <p style="font-size:0.85rem;color:#64748b;margin-bottom:10px;">
+        把之前导出的备份文字粘贴到下面，点「确认导入」。<br>
+        ⚠️ 导入会覆盖当前所有药品，请先导出备份。
+      </p>
+      <textarea class="import-textarea" id="importTextarea" placeholder="在此粘贴备份内容…"></textarea>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="importCancelBtn">取消</button>
+        <button type="button" class="btn btn-primary" id="importConfirmBtn">📥 确认导入</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast-message"></div>
 
   <script>
     (function() {
-      // ---- 小药箱逻辑 ----
+      // ==================== 小药箱逻辑 ====================
       const STORAGE_KEY = 'medicine_box_items';
       let medicines = [];
 
@@ -266,6 +403,27 @@
       const lowStockCountSpan = document.getElementById('lowStockCount');
       const searchInput = document.getElementById('searchInput');
       const toastEl = document.getElementById('toast');
+
+      // 编辑弹窗
+      const editModal = document.getElementById('editModal');
+      const editForm = document.getElementById('editForm');
+      const editId = document.getElementById('editId');
+      const editName = document.getElementById('editName');
+      const editExpiry = document.getElementById('editExpiry');
+      const editQuantity = document.getElementById('editQuantity');
+      const editUnit = document.getElementById('editUnit');
+      const editIndication = document.getElementById('editIndication');
+      const editCloseBtn = document.getElementById('editCloseBtn');
+      const editCancelBtn = document.getElementById('editCancelBtn');
+
+      // 导入弹窗
+      const importModal = document.getElementById('importModal');
+      const importTextarea = document.getElementById('importTextarea');
+      const importBtn = document.getElementById('importBtn');
+      const exportBtn = document.getElementById('exportBtn');
+      const importCloseBtn = document.getElementById('importCloseBtn');
+      const importCancelBtn = document.getElementById('importCancelBtn');
+      const importConfirmBtn = document.getElementById('importConfirmBtn');
 
       let currentSearch = '';
 
@@ -305,7 +463,6 @@
         if (days === null) return { className: '', text: '未知' };
         if (days < 0) return { className: 'expiry-danger', text: `已过期 ${-days} 天` };
         if (days === 0) return { className: 'expiry-danger', text: '今天到期' };
-        if (days <= 30) return { className: 'expiry-warning', text: `剩余 ${days} 天` };
         if (days <= 90) return { className: 'expiry-warning', text: `剩余 ${days} 天` };
         return { className: '', text: `剩余 ${days} 天` };
       }
@@ -318,8 +475,7 @@
           const days = daysUntilExpiry(med.expiryDate);
           if (days !== null && days <= 90) expiringCount++;
           const qty = parseInt(med.quantity, 10);
-          if (!isNaN(qty) && qty > 0 && qty <= 5) lowStockCount++;
-          if (!isNaN(qty) && qty === 0) lowStockCount++;
+          if (!isNaN(qty) && qty >= 0 && qty <= 5) lowStockCount++;
         });
         expiringCountSpan.textContent = expiringCount;
         lowStockCountSpan.textContent = lowStockCount;
@@ -363,7 +519,6 @@
       function render() {
         updateStats();
 
-        // 过滤搜索
         const keyword = currentSearch.trim().toLowerCase();
         let filtered = medicines;
         if (keyword) {
@@ -392,20 +547,14 @@
           const disp = formatExpiryDate(med.expiryDate);
           const ind = med.indication?.trim() ? med.indication : '（未填写适应症）';
 
-          // 余量显示
           const qtyNum = parseInt(med.quantity, 10);
           let qtyDisplay = '';
           let qtyClass = 'quantity-badge';
           if (med.quantity === '' || med.quantity === null || med.quantity === undefined) {
             qtyDisplay = '未记录';
-            qtyClass = 'quantity-badge';
           } else if (!isNaN(qtyNum)) {
             qtyDisplay = `${qtyNum} ${med.unit || '片'}`;
-            if (qtyNum <= 0) {
-              qtyClass = 'quantity-badge quantity-low';
-            } else if (qtyNum <= 5) {
-              qtyClass = 'quantity-badge quantity-low';
-            }
+            if (qtyNum <= 5) qtyClass = 'quantity-badge quantity-low';
           } else {
             qtyDisplay = `${med.quantity} ${med.unit || '片'}`;
           }
@@ -422,6 +571,7 @@
                 </div>
               </div>
               <div class="med-actions">
+                <button class="btn btn-edit btn-small edit-btn" data-id="${med.id}">✏️ 编辑</button>
                 <button class="btn btn-danger btn-small delete-btn" data-id="${med.id}">删除</button>
               </div>
             </div>`;
@@ -437,6 +587,22 @@
           saveToLocalStorage(); render();
           showToast(`已删除 ${med.name}`);
         }
+      }
+
+      function openEditModal(id) {
+        const med = medicines.find(m => m.id === id);
+        if (!med) return;
+        editId.value = med.id;
+        editName.value = med.name || '';
+        editExpiry.value = med.expiryDate || '';
+        editQuantity.value = med.quantity || '';
+        editUnit.value = med.unit || '片';
+        editIndication.value = med.indication || '';
+        editModal.classList.add('show');
+      }
+
+      function closeEditModal() {
+        editModal.classList.remove('show');
       }
 
       function addMedicine(name, indication, expiryDate, quantity, unit) {
@@ -468,39 +634,105 @@
         }
       }
 
+      // ==================== 导出 / 导入 ====================
+      function exportData() {
+        if (!medicines.length) {
+          showToast('没有数据可导出');
+          return;
+        }
+        const exportObj = {
+          version: 1,
+          exportDate: new Date().toISOString(),
+          medicines: medicines
+        };
+        const text = JSON.stringify(exportObj, null, 2);
+
+        // 尝试复制到剪贴板
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            showToast('✅ 已复制到剪贴板，粘贴到备忘录保存吧');
+          }).catch(() => fallbackCopy(text));
+        } else {
+          fallbackCopy(text);
+        }
+      }
+
+      function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.top = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          const ok = document.execCommand('copy');
+          if (ok) showToast('✅ 已复制到剪贴板，粘贴到备忘录保存吧');
+          else {
+            // 实在复制不了，就让用户手动复制
+            prompt('复制下面的内容保存到备忘录：', text);
+          }
+        } catch (err) {
+          prompt('复制下面的内容保存到备忘录：', text);
+        } finally {
+          document.body.removeChild(ta);
+        }
+      }
+
+      function openImportModal() {
+        importTextarea.value = '';
+        importModal.classList.add('show');
+      }
+
+      function closeImportModal() {
+        importModal.classList.remove('show');
+      }
+
+      function doImport() {
+        const text = importTextarea.value.trim();
+        if (!text) { showToast('请先粘贴备份内容'); return; }
+
+        let parsed;
+        try {
+          parsed = JSON.parse(text);
+        } catch (e) {
+          showToast('❌ 内容格式不对，请检查是否完整复制');
+          return;
+        }
+
+        let importedMeds = null;
+        // 兼容两种格式：{version, medicines} 或直接数组
+        if (Array.isArray(parsed)) {
+          importedMeds = parsed;
+        } else if (parsed && Array.isArray(parsed.medicines)) {
+          importedMeds = parsed.medicines;
+        }
+
+        if (!importedMeds) {
+          showToast('❌ 找不到药品数据');
+          return;
+        }
+
+        // 规范化数据
+        importedMeds = importedMeds.map(med => ({
+          id: med.id || generateId(),
+          name: med.name || '未命名药品',
+          indication: med.indication || '',
+          expiryDate: med.expiryDate || '',
+          quantity: med.quantity ?? '',
+          unit: med.unit || '片'
+        }));
+
+        if (!confirm(`即将导入 ${importedMeds.length} 条药品记录，\n当前已有的 ${medicines.length} 条会被覆盖。\n\n确定继续吗？`)) {
+          return;
+        }
+
+        medicines = importedMeds;
+        saveToLocalStorage();
+        render();
+        closeImportModal();
+        showToast(`✅ 已导入 ${importedMeds.length} 条药品`);
+      }
+
+      // ==================== 事件绑定 ====================
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const name = medNameInput.value.trim();
-        if (!name) { showToast('请填写药品名称'); medNameInput.focus(); return; }
-        addMedicine(
-          name,
-          medIndicationInput.value.trim(),
-          medExpiryInput.value,
-          medQuantityInput.value,
-          medUnitSelect.value
-        );
-        resetForm(); showToast('✅ 药品已保存');
-      });
-
-      resetBtn.addEventListener('click', resetForm);
-      clearAllBtn.addEventListener('click', clearAllMedicines);
-
-      // 搜索
-      searchInput.addEventListener('input', (e) => {
-        currentSearch = e.target.value;
-        render();
-      });
-
-      listContainer.addEventListener('click', (e) => {
-        const btn = e.target.closest('.delete-btn');
-        if (btn) { e.stopPropagation(); deleteMedicineById(btn.dataset.id); }
-      });
-
-      loadFromLocalStorage();
-      render();
-
-      window.addEventListener('beforeunload', saveToLocalStorage);
-    })();
-  </script>
-</body>
-</html>
