@@ -2,8 +2,8 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>小药箱 · 药品记录</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=yes">
+<title>小药箱</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:#f5f7fa;min-height:100vh;display:flex;justify-content:center;padding:16px 12px 40px}
@@ -15,13 +15,11 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;back
 .box-bar{background:white;border-radius:20px;padding:12px 16px;margin-bottom:16px;box-shadow:0 3px 12px rgba(0,0,0,0.02);border:1px solid #eef2f6}
 .box-bar-title{font-size:0.8rem;font-weight:500;color:#64748b;margin-bottom:8px}
 .box-tabs{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.box-tab{background:#f1f5f9;color:#475569;border:1.5px solid transparent;padding:8px 16px;border-radius:30px;font-size:0.85rem;font-weight:500;cursor:pointer;transition:0.15s;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
-.box-tab:hover{background:#e2e8f0}
-.box-tab.active{background:#2563eb;color:white;border-color:#2563eb;box-shadow:0 4px 10px rgba(37,99,235,0.2)}
+.box-tab{background:#f1f5f9;color:#475569;border:1.5px solid transparent;padding:8px 16px;border-radius:30px;font-size:0.85rem;font-weight:500;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+.box-tab.active{background:#2563eb;color:#fff;border-color:#2563eb}
 .box-tab .count{background:rgba(0,0,0,0.08);padding:0 6px;border-radius:20px;font-size:0.75rem;line-height:1.5}
 .box-tab.active .count{background:rgba(255,255,255,0.25)}
 .box-tab-add{background:white;color:#2563eb;border:1.5px dashed #93c5fd;padding:8px 14px;border-radius:30px;font-size:0.85rem;font-weight:500;cursor:pointer;font-family:inherit}
-.box-tab-add:hover{background:#eff6ff}
 .box-actions{margin-left:auto;display:flex;gap:6px}
 .box-actions .btn{padding:6px 12px;font-size:0.78rem;border-radius:30px}
 .stats-bar{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 20px}
@@ -56,11 +54,10 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;back
 .list-header h2{font-size:1.3rem;font-weight:600;color:#0f172a;display:flex;align-items:center;gap:8px}
 .medicine-card{background:white;border-radius:20px;padding:16px 18px;box-shadow:0 3px 12px rgba(0,0,0,0.02);border:1px solid #eef2f6;display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px;margin-bottom:12px}
 .med-info{flex:1;min-width:200px}
-.med-name{font-size:1.15rem;font-weight:700;color:#0f172a;margin-bottom:6px;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.med-name{font-size:1.15rem;font-weight:700;color:#0f172a;margin-bottom:6px}
 .med-indication{color:#334155;font-size:0.9rem;line-height:1.5;margin-bottom:8px;background:#f1f5f9;padding:6px 10px;border-radius:12px;word-break:break-word}
 .med-usage{color:#7c2d12;font-size:0.88rem;line-height:1.5;margin-bottom:8px;background:#fef3c7;padding:6px 10px;border-radius:12px;word-break:break-word}
 .med-meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:0.85rem;color:#475569;margin-top:6px}
-.med-meta .meta-item{display:flex;align-items:center;gap:5px}
 .expiry-badge{background:#e6f7ec;color:#0b5e42;padding:2px 10px;border-radius:30px;font-weight:500;font-size:0.8rem}
 .expiry-warning{background:#fff3cd;color:#856404}
 .expiry-danger{background:#f8d7da;color:#721c24}
@@ -69,7 +66,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;back
 .med-actions{display:flex;gap:6px;margin-left:auto}
 .empty-state{background:white;border-radius:24px;padding:44px 20px;text-align:center;color:#94a3b8;border:2px dashed #e2e8f0;font-size:1rem}
 .empty-state span{font-size:2.4rem;display:block;margin-bottom:8px;opacity:0.6}
-.toast-message{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 22px;border-radius:40px;font-size:0.9rem;box-shadow:0 10px 20px rgba(0,0,0,0.1);opacity:0;transition:opacity 0.2s;pointer-events:none;z-index:100;white-space:nowrap}
+.toast-message{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 22px;border-radius:40px;font-size:0.9rem;box-shadow:0 10px 20px rgba(0,0,0,0.1);opacity:0;transition:opacity 0.2s;pointer-events:none;z-index:100;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}
 .toast-message.show{opacity:1}
 .footer-note{text-align:center;font-size:0.75rem;color:#94a3b8;margin-top:28px}
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.5);display:none;align-items:center;justify-content:center;z-index:200;padding:16px}
@@ -158,7 +155,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;back
 
 <div class="modal-overlay" id="importModal"><div class="modal-box">
 <div class="modal-title"><span>📥 导入备份</span><button class="modal-close" id="importCloseBtn">✕</button></div>
-<p style="font-size:0.85rem;color:#64748b;margin-bottom:10px;">粘贴之前导出的备份文字。<b>导入会覆盖所有药箱</b>，请先导出备份。</p>
+<p style="font-size:0.85rem;color:#64748b;margin-bottom:10px;">粘贴之前导出的备份文字。<b>导入会覆盖所有药箱</b>。</p>
 <textarea class="import-textarea" id="importTextarea" placeholder="在此粘贴备份内容…"></textarea>
 <div class="modal-actions"><button type="button" class="btn btn-secondary" id="importCancelBtn">取消</button><button type="button" class="btn btn-primary" id="importConfirmBtn">📥 确认导入</button></div>
 </div></div>
@@ -167,56 +164,54 @@ body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;back
 
 <script>
 (function(){
-var STORAGE_KEY='medicine_box_data_v2';
-var state={activeBoxId:'default',boxes:[]};
-var currentSearch='';
-function $(id){return document.getElementById(id);}
-var boxTabs=$('boxTabs'),form=$('medicineForm'),medNameInput=$('medName'),medExpiryInput=$('medExpiry'),medQuantityInput=$('medQuantity'),medUnitSelect=$('medUnit'),medIndicationInput=$('medIndication'),medUsageInput=$('medUsage'),resetBtn=$('resetFormBtn'),clearAllBtn=$('clearAllBtn'),listContainer=$('medicineListContainer'),totalCountSpan=$('totalCount'),expiringCountSpan=$('expiringCount'),lowStockCountSpan=$('lowStockCount'),searchInput=$('searchInput'),toastEl=$('toast');
-var editModal=$('editModal'),editForm=$('editForm'),editId=$('editId'),editName=$('editName'),editExpiry=$('editExpiry'),editQuantity=$('editQuantity'),editUnit=$('editUnit'),editIndication=$('editIndication'),editUsage=$('editUsage'),editCloseBtn=$('editCloseBtn'),editCancelBtn=$('editCancelBtn');
-var newBoxModal=$('newBoxModal'),newBoxName=$('newBoxName'),newBoxCloseBtn=$('newBoxCloseBtn'),newBoxCancelBtn=$('newBoxCancelBtn'),newBoxConfirmBtn=$('newBoxConfirmBtn');
-var importModal=$('importModal'),importTextarea=$('importTextarea'),importBtn=$('importBtn'),exportBtn=$('exportBtn'),importCloseBtn=$('importCloseBtn'),importCancelBtn=$('importCancelBtn'),importConfirmBtn=$('importConfirmBtn');
+var KEY='medicine_box_data_v2';
+var S={activeBoxId:'default',boxes:[]};
+var q='';
+function $(i){return document.getElementById(i);}
+var boxTabs=$('boxTabs'),form=$('medicineForm'),medName=$('medName'),medExpiry=$('medExpiry'),medQty=$('medQuantity'),medUnit=$('medUnit'),medInd=$('medIndication'),medUse=$('medUsage'),resetBtn=$('resetFormBtn'),clearAllBtn=$('clearAllBtn'),listC=$('medicineListContainer'),totalC=$('totalCount'),expC=$('expiringCount'),lowC=$('lowStockCount'),searchIn=$('searchInput'),toastEl=$('toast');
+var editModal=$('editModal'),editForm=$('editForm'),editId=$('editId'),editName=$('editName'),editExpiry=$('editExpiry'),editQty=$('editQuantity'),editUnit=$('editUnit'),editInd=$('editIndication'),editUse=$('editUsage'),editClose=$('editCloseBtn'),editCancel=$('editCancelBtn');
+var newBoxModal=$('newBoxModal'),newBoxName=$('newBoxName'),newBoxClose=$('newBoxCloseBtn'),newBoxCancel=$('newBoxCancelBtn'),newBoxOk=$('newBoxConfirmBtn');
+var impModal=$('importModal'),impText=$('importTextarea'),impBtn=$('importBtn'),expBtn=$('exportBtn'),impClose=$('importCloseBtn'),impCancel=$('importCancelBtn'),impOk=$('importConfirmBtn');
 
 function uid(){return Date.now()+'-'+Math.random().toString(36).substring(2,9);}
-var tTimer=null;
-function toast(msg,d){d=d||2000;if(tTimer)clearTimeout(tTimer);toastEl.textContent=msg;toastEl.classList.add('show');tTimer=setTimeout(function(){toastEl.classList.remove('show');},d);}
-function fmtDate(s){if(!s)return '未设置';try{var d=new Date(s);if(isNaN(d.getTime()))return s;return d.toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'});}catch(e){return s;}}
-function daysLeft(s){if(!s)return null;var t=new Date();t.setHours(0,0,0,0);var e=new Date(s);if(isNaN(e.getTime()))return null;e.setHours(0,0,0,0);return Math.ceil((e-t)/86400000);}
-function expStatus(s){if(!s)return{c:'',t:'未设置'};var d=daysLeft(s);if(d===null)return{c:'',t:'未知'};if(d<0)return{c:'expiry-danger',t:'已过期 '+(-d)+' 天'};if(d===0)return{c:'expiry-danger',t:'今天到期'};if(d<=90)return{c:'expiry-warning',t:'剩余 '+d+' 天'};return{c:'',t:'剩余 '+d+' 天'};}
+var tt=null;
+function toast(m,d){d=d||2000;if(tt)clearTimeout(tt);toastEl.textContent=m;toastEl.classList.add('show');tt=setTimeout(function(){toastEl.classList.remove('show');},d);}
+function fmtD(s){if(!s)return '未设置';try{var d=new Date(s);if(isNaN(d.getTime()))return s;return d.toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'});}catch(e){return s;}}
+function dLeft(s){if(!s)return null;var t=new Date();t.setHours(0,0,0,0);var e=new Date(s);if(isNaN(e.getTime()))return null;e.setHours(0,0,0,0);return Math.ceil((e-t)/86400000);}
+function expS(s){if(!s)return{c:'',t:'未设置'};var d=dLeft(s);if(d===null)return{c:'',t:'未知'};if(d<0)return{c:'expiry-danger',t:'已过期 '+(-d)+' 天'};if(d===0)return{c:'expiry-danger',t:'今天到期'};if(d<=90)return{c:'expiry-warning',t:'剩余 '+d+' 天'};return{c:'',t:'剩余 '+d+' 天'};}
 function esc(t){if(!t)return '';var d=document.createElement('div');d.textContent=t;return d.innerHTML;}
-function getBox(){var b=state.boxes.find(function(x){return x.id===state.activeBoxId;});if(!b){b=state.boxes[0];if(b)state.activeBoxId=b.id;}return b;}
-function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){toast('保存失败');}}
-function normMed(m){return {id:m.id||uid(),name:m.name||'',indication:m.indication||'',usage:m.usage||'',expiryDate:m.expiryDate||'',quantity:m.quantity==null?'':m.quantity,unit:m.unit||'片'};}
+function getBox(){var b=S.boxes.find(function(x){return x.id===S.activeBoxId;});if(!b){b=S.boxes[0];if(b)S.activeBoxId=b.id;}return b;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){toast('保存失败');}}
+function normM(m){return{id:m.id||uid(),name:m.name||'',indication:m.indication||'',usage:m.usage||'',expiryDate:m.expiryDate||'',quantity:m.quantity==null?'':m.quantity,unit:m.unit||'片'};}
 
 function load(){
 try{
-var s=localStorage.getItem(STORAGE_KEY);
-if(s){var p=JSON.parse(s);if(p&&Array.isArray(p.boxes)&&p.boxes.length){state=p;}else{state=null;}}
-if(!state){
-var old=localStorage.getItem('medicine_box_items');var oldMeds=[];
-if(old){try{var op=JSON.parse(old);if(Array.isArray(op))oldMeds=op;}catch(e){}}
-state={activeBoxId:'default',boxes:[{id:'default',name:'我的药箱',medicines:oldMeds.map(normMed)}]};
+var s=localStorage.getItem(KEY);
+if(s){var p=JSON.parse(s);if(p&&Array.isArray(p.boxes)&&p.boxes.length){S=p;}else{S=null;}}
+if(!S){
+var old=localStorage.getItem('medicine_box_items');var om=[];
+if(old){try{var op=JSON.parse(old);if(Array.isArray(op))om=op;}catch(e){}}
+S={activeBoxId:'default',boxes:[{id:'default',name:'我的药箱',medicines:om.map(normM)}]};
 save();
 }
-state.boxes.forEach(function(b){if(!b.id)b.id=uid();if(!b.name)b.name='未命名药箱';if(!Array.isArray(b.medicines))b.medicines=[];b.medicines=b.medicines.map(normMed);});
-if(!state.boxes.find(function(b){return b.id===state.activeBoxId;}))state.activeBoxId=state.boxes[0].id;
-}catch(e){state={activeBoxId:'default',boxes:[{id:'default',name:'我的药箱',medicines:[]}]};}
+S.boxes.forEach(function(b){if(!b.id)b.id=uid();if(!b.name)b.name='未命名药箱';if(!Array.isArray(b.medicines))b.medicines=[];b.medicines=b.medicines.map(normM);});
+if(!S.boxes.find(function(b){return b.id===S.activeBoxId;}))S.activeBoxId=S.boxes[0].id;
+}catch(e){S={activeBoxId:'default',boxes:[{id:'default',name:'我的药箱',medicines:[]}]};}
 save();
 }
 
 function renderBoxTabs(){
 var h='';
-state.boxes.forEach(function(b){
-var a=b.id===state.activeBoxId?' active':'';
+S.boxes.forEach(function(b){
+var a=b.id===S.activeBoxId?' active':'';
 h+='<button class="box-tab'+a+'" data-box="'+b.id+'">📁 '+esc(b.name)+' <span class="count">'+b.medicines.length+'</span></button>';
 });
 h+='<button class="box-tab-add" id="addBoxBtn">+ 新建药箱</button>';
-if(state.boxes.length>1){h+='<div class="box-actions"><button class="btn btn-secondary" id="renameBoxBtn">✏️ 重命名</button><button class="btn btn-danger" id="deleteBoxBtn">删除</button></div>';}
+if(S.boxes.length>1){h+='<div class="box-actions"><button class="btn btn-secondary" id="renameBoxBtn">✏️ 重命名</button><button class="btn btn-danger" id="deleteBoxBtn">删除</button></div>';}
 boxTabs.innerHTML=h;
 Array.prototype.forEach.call(boxTabs.querySelectorAll('.box-tab'),function(el){
 el.addEventListener('click',function(){
-state.activeBoxId=el.dataset.box;
-currentSearch='';searchInput.value='';
-save();renderAll();
+S.activeBoxId=el.dataset.box;q='';searchIn.value='';save();renderAll();
 });
 });
 var ab=$('addBoxBtn');if(ab)ab.addEventListener('click',function(){newBoxName.value='';newBoxModal.classList.add('show');setTimeout(function(){newBoxName.focus();},100);});
@@ -224,37 +219,37 @@ var rb=$('renameBoxBtn');if(rb)rb.addEventListener('click',function(){
 var b=getBox();if(!b)return;var n=prompt('修改药箱名称：',b.name);if(n===null)return;n=n.trim();if(!n){toast('名称不能为空');return;}b.name=n;save();renderAll();toast('✅ 已重命名');
 });
 var db=$('deleteBoxBtn');if(db)db.addEventListener('click',function(){
-if(state.boxes.length<=1){toast('至少要保留一个药箱');return;}
+if(S.boxes.length<=1){toast('至少要保留一个药箱');return;}
 var b=getBox();if(!b)return;
-if(!confirm('⚠️ 确定删除药箱「'+b.name+'」吗？里面的 '+b.medicines.length+' 条药品也会一起删除，不可恢复。'))return;
-state.boxes=state.boxes.filter(function(x){return x.id!==b.id;});
-state.activeBoxId=state.boxes[0].id;save();renderAll();toast('已删除药箱');
+if(!confirm('⚠️ 确定删除药箱「'+b.name+'」吗？里面的 '+b.medicines.length+' 条药品也会一起删除。'))return;
+S.boxes=S.boxes.filter(function(x){return x.id!==b.id;});
+S.activeBoxId=S.boxes[0].id;save();renderAll();toast('已删除药箱');
 });
 }
 
-function updateStats(box){
-var meds=box?box.medicines:[];totalCountSpan.textContent=meds.length;
+function updStats(box){
+var ms=box?box.medicines:[];totalC.textContent=ms.length;
 var e=0,l=0;
-meds.forEach(function(m){var d=daysLeft(m.expiryDate);if(d!==null&&d<=90)e++;var q=parseInt(m.quantity,10);if(!isNaN(q)&&q>=0&&q<=5)l++;});
-expiringCountSpan.textContent=e;lowStockCountSpan.textContent=l;
+ms.forEach(function(m){var d=dLeft(m.expiryDate);if(d!==null&&d<=90)e++;var v=parseInt(m.quantity,10);if(!isNaN(v)&&v>=0&&v<=5)l++;});
+expC.textContent=e;lowC.textContent=l;
 }
 
 function renderList(){
 var box=getBox();
-if(!box){listContainer.innerHTML='<div class="empty-state"><span>📭</span>没有药箱</div>';return;}
-var meds=box.medicines;
-var k=currentSearch.trim().toLowerCase();
-var filtered=meds;
-if(k){filtered=meds.filter(function(m){return (m.name||'').toLowerCase().indexOf(k)>=0;});}
-if(!filtered.length){
-if(k){listContainer.innerHTML='<div class="empty-state"><span>🔍</span>没有找到「'+esc(currentSearch)+'」相关的药品</div>';}
-else{listContainer.innerHTML='<div class="empty-state"><span>📭</span>这个药箱还是空的，点击上方表单添加吧</div>';}
+if(!box){listC.innerHTML='<div class="empty-state"><span>📭</span>没有药箱</div>';return;}
+var ms=box.medicines;
+var k=q.trim().toLowerCase();
+var filt=ms;
+if(k){filt=ms.filter(function(m){return (m.name||'').toLowerCase().indexOf(k)>=0;});}
+if(!filt.length){
+if(k){listC.innerHTML='<div class="empty-state"><span>🔍</span>没有找到「'+esc(q)+'」相关的药品</div>';}
+else{listC.innerHTML='<div class="empty-state"><span>📭</span>这个药箱还是空的，点击上方表单添加吧</div>';}
 return;
 }
-var sorted=filtered.slice().sort(function(a,b){var da=daysLeft(a.expiryDate);var db=daysLeft(b.expiryDate);return (da===null?Infinity:da)-(db===null?Infinity:db);});
+var sorted=filt.slice().sort(function(a,b){var da=dLeft(a.expiryDate);var db=dLeft(b.expiryDate);return (da===null?Infinity:da)-(db===null?Infinity:db);});
 var h='';
 sorted.forEach(function(m){
-var st=expStatus(m.expiryDate);var disp=fmtDate(m.expiryDate);
+var st=expS(m.expiryDate);var disp=fmtD(m.expiryDate);
 var ind=m.indication&&m.indication.trim()?m.indication:'（未填写适应症）';
 var usage=m.usage&&m.usage.trim()?'<div class="med-usage">💡 用法：'+esc(m.usage)+'</div>':'';
 var qn=parseInt(m.quantity,10);var qd='',qc='quantity-badge';
@@ -267,7 +262,7 @@ h+='<div class="medicine-card" data-id="'+m.id+'">'
 +'<div class="med-indication">'+esc(ind)+'</div>'
 +usage
 +'<div class="med-meta">'
-+'<span class="meta-item">📅 到期: '+disp+'</span>'
++'<span>📅 到期: '+disp+'</span>'
 +'<span class="expiry-badge '+st.c+'">'+st.t+'</span>'
 +'<span class="'+qc+'">📦 '+qd+'</span>'
 +'</div></div>'
@@ -276,22 +271,23 @@ h+='<div class="medicine-card" data-id="'+m.id+'">'
 +'<button class="btn btn-danger btn-small delete-btn" data-id="'+m.id+'">删除</button>'
 +'</div></div>';
 });
-listContainer.innerHTML=h;
+listC.innerHTML=h;
 }
 
-function renderAll(){renderBoxTabs();updateStats(getBox());renderList();}
+function renderAll(){renderBoxTabs();updStats(getBox());renderList();}
 
-function addMed(n,i,u,e,q,un){var b=getBox();if(!b)return;b.medicines.push({id:uid(),name:n.trim(),indication:i.trim(),usage:u.trim(),expiryDate:e?e.trim():'',quantity:q?q.trim():'',unit:un||'片'});save();renderAll();}
-function resetForm(){medNameInput.value='';medExpiryInput.value='';medQuantityInput.value='';medUnitSelect.value='片';medIndicationInput.value='';medUsageInput.value='';medNameInput.focus();}
+function addMed(n,i,u,e,v,un){var b=getBox();if(!b)return;b.medicines.push({id:uid(),name:n.trim(),indication:i.trim(),usage:u.trim(),expiryDate:e?e.trim():'',quantity:v?v.trim():'',unit:un||'片'});save();renderAll();}
+function resetForm(){medName.value='';medExpiry.value='';medQty.value='';medUnit.value='片';medInd.value='';medUse.value='';medName.focus();}
 
 function delMed(id){var b=getBox();if(!b)return;var m=b.medicines.find(function(x){return x.id===id;});if(!m)return;if(confirm('确定要删除「'+(m.name||'该药品')+'」吗？')){b.medicines=b.medicines.filter(function(x){return x.id!==id;});save();renderAll();toast('已删除 '+m.name);}}
 
-function openEdit(id){var b=getBox();if(!b)return;var m=b.medicines.find(function(x){return x.id===id;});if(!m)return;editId.value=m.id;editName.value=m.name||'';editExpiry.value=m.expiryDate||'';editQuantity.value=m.quantity||'';editUnit.value=m.unit||'片';editIndication.value=m.indication||'';editUsage.value=m.usage||'';editModal.classList.add('show');}
+function openEdit(id){var b=getBox();if(!b)return;var m=b.medicines.find(function(x){return x.id===id;});if(!m)return;editId.value=m.id;editName.value=m.name||'';editExpiry.value=m.expiryDate||'';editQty.value=m.quantity||'';editUnit.value=m.unit||'片';editInd.value=m.indication||'';editUse.value=m.usage||'';editModal.classList.add('show');}
 function closeEdit(){editModal.classList.remove('show');}
 
 function exportData(){
-if(!getBox()||!getBox().medicines.length){toast('没有数据可导出');return;}
-var obj={version:2,exportDate:new Date().toISOString(),state:state};
+var b=getBox();
+if(!b||!b.medicines.length){toast('当前药箱没有数据可导出');return;}
+var obj={version:2,exportDate:new Date().toISOString(),state:S};
 var text=JSON.stringify(obj,null,2);
 if(navigator.clipboard&&navigator.clipboard.writeText){
 navigator.clipboard.writeText(text).then(function(){toast('✅ 已复制到剪贴板，粘贴到备忘录保存');}).catch(function(){fallbackCopy(text);});
@@ -303,30 +299,26 @@ try{var ok=document.execCommand('copy');if(ok)toast('✅ 已复制到剪贴板')
 }
 
 function doImport(){
-var text=importTextarea.value.trim();
+var text=impText.value.trim();
 if(!text){toast('请先粘贴备份内容');return;}
 var parsed;try{parsed=JSON.parse(text);}catch(e){toast('❌ 内容格式不对');return;}
-var newState=null;
-if(parsed&&parsed.state&&Array.isArray(parsed.state.boxes))newState=parsed.state;
-else if(parsed&&Array.isArray(parsed.boxes))newState=parsed;
-else if(Array.isArray(parsed)){
-newState={activeBoxId:'default',boxes:[{id:'default',name:'我的药箱',medicines:parsed}]};
-}
-if(!newState||!newState.boxes.length){toast('❌ 找不到药品数据');return;}
-newState.boxes=newState.boxes.map(function(b){
-return {id:b.id||uid(),name:b.name||'未命名药箱',medicines:(b.medicines||[]).map(normMed)};
-});
-if(!confirm('即将导入 '+newState.boxes.length+' 个药箱，当前数据会被覆盖。确定继续吗？'))return;
-state=newState;
-if(!state.boxes.find(function(b){return b.id===state.activeBoxId;}))state.activeBoxId=state.boxes[0].id;
-save();renderAll();importModal.classList.remove('show');toast('✅ 已导入 '+state.boxes.length+' 个药箱');
+var ns=null;
+if(parsed&&parsed.state&&Array.isArray(parsed.state.boxes))ns=parsed.state;
+else if(parsed&&Array.isArray(parsed.boxes))ns=parsed;
+else if(Array.isArray(parsed)){ns={activeBoxId:'default',boxes:[{id:'default',name:'我的药箱',medicines:parsed}]};}
+if(!ns||!ns.boxes.length){toast('❌ 找不到药品数据');return;}
+ns.boxes=ns.boxes.map(function(b){return{id:b.id||uid(),name:b.name||'未命名药箱',medicines:(b.medicines||[]).map(normM)};});
+if(!confirm('即将导入 '+ns.boxes.length+' 个药箱，当前数据会被覆盖。确定继续吗？'))return;
+S=ns;
+if(!S.boxes.find(function(b){return b.id===S.activeBoxId;}))S.activeBoxId=S.boxes[0].id;
+save();renderAll();impModal.classList.remove('show');toast('✅ 已导入 '+S.boxes.length+' 个药箱');
 }
 
 form.addEventListener('submit',function(e){
 e.preventDefault();
-var n=medNameInput.value.trim();
-if(!n){toast('请填写药品名称');medNameInput.focus();return;}
-addMed(n,medIndicationInput.value.trim(),medUsageInput.value.trim(),medExpiryInput.value,medQuantityInput.value,medUnitSelect.value);
+var n=medName.value.trim();
+if(!n){toast('请填写药品名称');medName.focus();return;}
+addMed(n,medInd.value.trim(),medUse.value.trim(),medExpiry.value,medQty.value,medUnit.value);
 resetForm();toast('✅ 药品已保存');
 });
 resetBtn.addEventListener('click',resetForm);
@@ -335,5 +327,38 @@ var b=getBox();if(!b)return;
 if(!b.medicines.length){toast('当前药箱已经是空的');return;}
 if(confirm('⚠️ 确定要清空药箱「'+b.name+'」里的全部 '+b.medicines.length+' 条药品吗？')){b.medicines=[];save();renderAll();toast('已清空');resetForm();}
 });
-searchInput.addEventListener('input',function(e){currentSearch=e.target.value;renderList();});
-listContainer.addEventListener('click',function(e
+searchIn.addEventListener('input',function(e){q=e.target.value;renderList();});
+listC.addEventListener('click',function(e){
+var eb=e.target.closest('.edit-btn');
+if(eb){e.stopPropagation();openEdit(eb.dataset.id);return;}
+var db=e.target.closest('.delete-btn');
+if(db){e.stopPropagation();delMed(db.dataset.id);}
+});
+editClose.addEventListener('click',closeEdit);
+editCancel.addEventListener('click',closeEdit);
+editForm.addEventListener('submit',function(e){
+e.preventDefault();
+var b=getBox();if(!b)return;
+var m=b.medicines.find(function(x){return x.id===editId.value;});if(!m)return;
+m.name=editName.value.trim();m.expiryDate=editExpiry.value;m.quantity=editQty.value;m.unit=editUnit.value;m.indication=editInd.value.trim();m.usage=editUse.value.trim();
+save();renderAll();closeEdit();toast('✅ 已保存修改');
+});
+newBoxClose.addEventListener('click',function(){newBoxModal.classList.remove('show');});
+newBoxCancel.addEventListener('click',function(){newBoxModal.classList.remove('show');});
+newBoxOk.addEventListener('click',function(){
+var n=newBoxName.value.trim();
+if(!n){toast('请输入药箱名称');newBoxName.focus();return;}
+var id=uid();S.boxes.push({id:id,name:n,medicines:[]});S.activeBoxId=id;q='';searchIn.value='';save();renderAll();newBoxModal.classList.remove('show');toast('✅ 已创建「'+n+'」');
+});
+impBtn.addEventListener('click',function(){impText.value='';impModal.classList.add('show');});
+impClose.addEventListener('click',function(){impModal.classList.remove('show');});
+impCancel.addEventListener('click',function(){impModal.classList.remove('show');});
+impOk.addEventListener('click',doImport);
+expBtn.addEventListener('click',exportData);
+
+load();renderAll();
+window.addEventListener('beforeunload',save);
+})();
+</script>
+</body>
+</html>
